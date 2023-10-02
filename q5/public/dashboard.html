@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+</head>
+<body>
+    <h1>Welcome to the Dashboard</h1>
+    <p>Hello, Admin!</p>
+    <a href="#" onclick="logout()">Logout</a>
+
+    
+    <h1>Student List</h1>
+    <a href="/add-student.html">Add Student</a>
+    <hr width="50%" align="left">
+    <table style="width: 50%;">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>phone</th>
+                <th>email</th>
+                <th>semester</th>
+                <th>Edit</th>
+                <th>Delete</th>
+            </tr>
+        </thead>
+        <tbody id="student-table-body"></tbody>
+            <!-- <tr>
+                <td><%= student.name %></td>
+                <td><%= student.phone %></td>
+                <td><%= student.email %></td>
+                <td><%= student.semester %></td>
+                <td><a href="/students/edit/<%= student._id %>">Edit</a></td>
+                <td><a href="/students/delete/<%= student._id %>">Delete</a></td>
+            </tr> -->
+    </table>
+    <hr width="50%" align="left">
+
+</body>
+
+<script>
+    if(!localStorage.getItem('token')){
+        window.location.href = "/"
+    }
+    
+    function fetchStudents() {
+        fetch('/students',{
+            headers : {
+                'Authorization' :  localStorage.getItem('token')
+            }
+        }) 
+            .then(response => response.json())
+            .then(data => {
+                const tableBody = document.getElementById('student-table-body');
+                tableBody.innerHTML = '';
+                data?.data?.students?.forEach(student => { 
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${student.name}</td>
+                        <td>${student.phone}</td>
+                        <td>${student.email}</td>
+                        <td>${student.semester}</td>
+                        <td><a href="/edit-student.html?id=${student._id}">Edit</a></td>
+                        <td><a href="/students/delete/${student._id}">Delete</a></td>
+                    `;
+                    tableBody.appendChild(row);
+                });
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                localStorage.clear()
+                window.location.href = '/';
+            });
+    }
+
+
+    function logout(){
+        localStorage.clear();
+        window.location.href = "/";
+    }
+    fetchStudents();
+</script>
+</html>

@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+
+
+</head>
+<body>
+    <div class="header">
+        <h2  class="h2 text-center">Registration</h2>
+    </div>
+    <div class="col-md-6 d-flex container mt-5" >
+        <form class="row g-3 needs-validation d-flex" novalidate action="/registration" method="post" enctype="multipart/form-data" id="FormReg">
+            <div id="successAlert" class="alert alert-success" role="alert" hidden="true" alert-dismissible >     
+              Great!! Registration Successfully!!   
+              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            <div id="failureAlert" class="alert alert-danger" role="alert" hidden="true" alert-dismissible >     
+              OOPS!! Something Going Wrong!!   
+              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            <div class="col-md-4">
+              <label for="validationCustom01" class="form-label">Name</label>
+              <input type="text" class="form-control" id="validationCustom01" name="name" required>
+              <div class="valid-feedback">
+                Looks good!
+              </div>
+              <div class="invalid-feedback">
+                Please enter name.
+              </div>
+            </div>
+            <div class="col-md-4">
+              <label for="validationCustom02" class="form-label">email</label>
+              <input type="email" class="form-control" id="validationCustom02" name="email" required>
+              <div class="valid-feedback">
+                Looks good!
+              </div>
+              <div class="invalid-feedback">
+                Please enter email.
+              </div>
+            </div>
+          
+            <div class="col-md-4">
+              <label for="validationCustom03" class="form-label">Password</label>
+              <input type="password" class="form-control" id="validationCustom03" name="password" required minlength="8">
+              <div class="invalid-feedback">
+                Please enter password. (Min 8 character)
+              </div>
+            </div>
+            <div class="col-md-4">
+              <label for="validationCustom04" class="form-label">State</label>
+              <select class="form-select" id="validationCustom04" name="state" required>
+                <option selected disabled value="">Choose...</option>
+                <option>Gujarat</option>
+                <option>Maharastra</option>
+                <option>Delhi</option>
+                <option>Goa</option>
+              </select>
+              <div class="invalid-feedback">
+                Please select a valid state.
+              </div>
+            </div>
+          
+            <div class="col-md-4">
+                <label for="validationCustom06" class="form-label">Profile</label>
+                <input type="file" class="form-control" id="validationCustom06" name="profile" required accept="Image/*" data-filetype="Image/*">
+                <div class="invalid-feedback">
+                  Please select profile photo.
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <label for="validationCustom07" class="form-label">Certificates</label>
+                <input type="file" class="form-control" id="validationCustom07" name="certificates" required accept="Image/*" data-filetype="Image/*" multiple>
+                <div class="invalid-feedback">
+                  Please select atleast one certificate.
+                </div>
+            </div>
+
+            <div class="col-12">
+              <button class="btn btn-primary" type="submit">Submit form</button>
+            </div>
+          </form>
+    </div>
+</body>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
+
+<script>
+  
+    (() => {
+  'use strict'
+
+  // Fetch all the forms we want to apply custom Bootstrap validation styles to
+
+  // Loop over them and prevent submission
+        const form = document.getElementById("FormReg");
+    form.addEventListener('submit', event => {
+      if (!form.checkValidity()) {
+        event.preventDefault()
+        event.stopPropagation()
+            if ($("#validationCustom07")[0].files.length > 2) {
+                alert("You can select only 2 images");
+                event.preventDefault()
+                event.stopPropagation()
+            }
+      }
+      else{0
+
+        event.preventDefault()
+        const form_data = new FormData($('#FormReg')[0]);
+        
+        $.ajax({
+            url:"/registration",
+            type: "post",
+            data : form_data,
+            cache: false,
+            contentType: false,
+            processData: false,
+            success:function(data){
+              if(data.success==true){
+                $('#successAlert').attr('hidden',false);
+                $('#failureAlert').attr('hidden',true);
+              }
+              else{
+                $('#successAlert').attr('hidden',true);
+                $('#failureAlert').attr('hidden',false);
+                $('#failureAlert').text(data?.message);
+              }
+            },
+            error:function(err){
+
+            }
+        })
+      }
+
+      form.classList.add('was-validated')
+    }, false)
+
+
+    
+
+})()
+
+
+
+</script>
+</html>
