@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+</head>
+<body>
+    <h1>Welcome to the Dashboard</h1>
+    <p>Hello, Admin!</p>
+    <a href="/logout">Logout</a>
+
+    
+    <h1>Student List</h1>
+    <a href="/students/add">Add Student</a>
+    <hr width="50%" align="left">
+    <table style="width: 50%;">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>phone</th>
+                <th>email</th>
+                <th>semester</th>
+                <th>Edit</th>
+                <th>Delete</th>
+            </tr>
+        </thead>
+        <% students.forEach((student) => { %>
+            <tr>
+                <td><%= student.name %></td>
+                <td><%= student.phone %></td>
+                <td><%= student.email %></td>
+                <td><%= student.semester %></td>
+                <td><a href="/students/edit/<%= student._id %>">Edit</a></td>
+                <td><a href="/students/delete/<%= student._id %>">Delete</a></td>
+            </tr>
+        <% }); %>
+    </table>
+    <hr width="50%" align="left">
+
+</body>
+</html>

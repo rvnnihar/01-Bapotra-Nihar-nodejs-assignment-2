@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update Student</title>
+</head>
+<body>
+    <h1>Update Student</h1>
+    <form id="update-student-form">
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" required>
+        <br>
+        <label for="semester">Semester:</label>
+        <input type="number" id="semester" name="semester" required>
+        <br>
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required>
+        <br>
+        <label for="phone">Phone:</label>
+        <input type="tel" id="phone" name="phone" required>
+        <br>
+        <button type="submit">Update Student</button>
+    </form>
+    <a href="/dashboard.html">Back to Student List</a>
+
+    <script>
+       if(!localStorage.getItem('token')){
+            window.location.href = "/"
+        }
+
+        function fetchStudentDetails() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const studentId = urlParams.get('id');
+            fetch(`/students/edit/${studentId}`,{headers:{
+                'Authorization' :  localStorage.getItem('token')
+            }}) 
+                .then(response => response.json())
+                .then(data => {
+                    const student = data?.data?.student;
+                    document.getElementById('name').value = student.name;
+                    document.getElementById('semester').value = student.semester;
+                    document.getElementById('email').value = student.email;
+                    document.getElementById('phone').value = student.phone;
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    localStorage.clear()
+                    window.location.href = '/';
+                });
+        }
+
+        
+        document.getElementById('update-student-form').addEventListener('submit', function (event) {
+            event.preventDefault();
+
+            const urlParams = new URLSearchParams(window.location.search);
+            const studentId = urlParams.get('id');
+
+            const formData = new FormData(this);
+            const data = {};
+            formData.forEach((value, key) => {
+                data[key] = value;
+            });
+            fetch(`/students/update/${studentId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization' : localStorage.getItem('token')
+                },
+                body: JSON.stringify(data),
+            })
+            .then(response => response.json())
+            .then(responseData => {
+                if (responseData.success) {
+                    alert('Student updated successfully');
+                    window.location.href = '/dashboard.html'; // Redirect to the student list
+                } else {
+                    alert('Failed to update student');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                localStorage.clear()
+                window.location.href = '/';
+            });
+        });
+
+        
+        window.addEventListener('load', function () {
+            fetchStudentDetails();
+            
+
+            const urlParams = new URLSearchParams(window.location.search);
+            const studentId = urlParams.get('id');
+            document.getElementById('update-student-form').action = `/students/update/${studentId}`;
+        });
+    </script>
+</body>
+</html>
